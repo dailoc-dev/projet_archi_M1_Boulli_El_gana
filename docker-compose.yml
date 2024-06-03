@@ -19,6 +19,7 @@ services:
     environment:
       - registry.url=http://registry:8080
       - worker.id=worker1
+      - server.port=8081
     networks:
       - spring-network
     depends_on:
@@ -33,6 +34,7 @@ services:
     environment:
       - registry.url=http://registry:8080
       - worker.id=worker2
+      - server.port=8082
     networks:
       - spring-network
     depends_on:
@@ -47,6 +49,7 @@ services:
     environment:
       - registry.url=http://registry:8080
       - worker.id=worker3
+      - server.port=8083
     networks:
       - spring-network
     depends_on:
@@ -60,6 +63,8 @@ services:
       - "8084:8082"
     environment:
       - registry.url=http://registry:8080
+      - service.hello.urls=http://worker1:8081/hello,http://worker2:8082/hello
+      - service.goodbye.urls=http://worker1:8081/goodbye,http://worker3:8083/goodbye
     networks:
       - spring-network
     depends_on:

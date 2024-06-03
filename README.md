@@ -37,3 +37,27 @@ Disponible dans le tag v1.
 
 Cette version implémente l'application de base fonctionnelle avec le monitoring.
 
+### V2
+
+Disponible dans le tag v2.
+
+Cette version ajoute une fonctionnalité de service mapping. Deux services "/hello" et "/goodbye" sont créés. Chaque worker est associé à un ou plusieurs services qu'il peut supporter : 
+- worker 1 : "/hello", "/goodbye"
+- worker 2 : "/hello"
+- worker 3 : "/goodbye"
+
+Le load-balancer se charge d'identifier le service demandé et les workers le supportant. Ensuite, il choisit au hasard un de ces workers pour fournir la réponse à l'utilisateur.
+
+Le mapping workers/services est fait dynamiquement grâce à des variables d'environnement définies dans le docker-compose.yml.
+
+Il est possible pour l'utilisateur d'ajouter un paramètre "name" à la requête. Le load-balancer vérifie la présence de ce paramètre, s'il est présent il renvoie une réponse du type "Hello {name}, I'm {worker.id}" ; sinon il renvoie une réponse plus générique "Hello from {worker.id}".
+
+**Exemples pour tester** : 
+- http://localhost:8084/hello
+- http://localhost:8084/hello?name=Pascal
+- http://localhost:8084/goodbye
+- http://localhost:8084/goodbye?name=Pascal
+
+Exécuter plusieurs fois la requête pour voir le changement aléatoire de worker.
+
+
