@@ -48,6 +48,8 @@ Il faut modifier la balise relative path comme suit :
 </parent>
 ````
 
+(C'est corrigé dans la branche main)
+
 ### V2
 
 Disponible dans le tag v2.
@@ -81,3 +83,7 @@ Ajout des noeuds et du WebServer. Désormais, le docker-compose ne gère plus le
 Le WebServer identifie les services et le nombre de workers demandés, puis il démarre les workers correspondants.
 
 --> Ne fonctionne pas, il y a encore un problème avec le lancement du node container...
+
+### V4
+
+Malheureusement pas de V4, nous sommes restés bloqués sur le problème en V3...
