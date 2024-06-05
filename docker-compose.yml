@@ -1,84 +1,3 @@
-version: '3.8'
-
-services:
-  registry:
-    build:
-      context: ./registry
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    networks:
-      - spring-network
-
-  node1:
-    build:
-      context: ./node
-      dockerfile: Dockerfile
-    privileged: true
-    ports:
-      - "2375:2375"
-      - "8081:8081"
-      - "8082:8082"
-    environment:
-      - registry.url=http://registry:8080
-      - node.id=node1
-    networks:
-      - spring-network
-    depends_on:
-      - registry
-
-  node2:
-    build:
-      context: ./node
-      dockerfile: Dockerfile
-    privileged: true
-    ports:
-      - "2376:2375"
-      - "8083:8081"
-      - "8084:8082"
-    environment:
-      - registry.url=http://registry:8080
-      - node.id=node2
-    networks:
-      - spring-network
-    depends_on:
-      - registry
-
-  server:
-    build:
-      context: ./WebServer
-      dockerfile: Dockerfile
-    ports:
-      - "8085:8085"
-    networks:
-      - spring-network
-    environment:
-      - registry.url=http://registry:8080
-    depends_on:
-      - registry
-
-  load-balancer:
-    build:
-      context: ./load-balancer
-      dockerfile: Dockerfile
-    ports:
-      - "8086:8082"
-    environment:
-      - registry.url=http://registry:8080
-      - service.hello.urls=http://worker1:8081/hello,http://worker2:8082/hello
-      - service.goodbye.urls=http://worker1:8081/goodbye,http://worker3:8083/goodbye
-    networks:
-      - spring-network
-    depends_on:
-      - registry
-
-networks:
-  spring-network:
-    driver: bridge
-
-
-
-
 #version: '3.8'
 #
 #services:
@@ -91,48 +10,54 @@ networks:
 #    networks:
 #      - spring-network
 #
-#  worker1:
+#  node1:
 #    build:
-#      context: ./worker
+#      context: ./node
 #      dockerfile: Dockerfile
+#    privileged: true
 #    ports:
+#      - "2375:2375"
 #      - "8081:8081"
+#      - "8082:8082"
 #    environment:
 #      - registry.url=http://registry:8080
-#      - worker.id=worker1
-#      - server.port=8081
+#      - node.id=node1
 #    networks:
 #      - spring-network
 #    depends_on:
 #      - registry
+#    volumes:
+#      - ../worker/target/worker-1.0-SNAPSHOT.jar:/worker/worker-1.0-SNAPSHOT.jar
 #
-#  worker2:
+#  node2:
 #    build:
-#      context: ./worker
+#      context: ./node
 #      dockerfile: Dockerfile
+#    privileged: true
 #    ports:
-#      - "8082:8081"
-#    environment:
-#      - registry.url=http://registry:8080
-#      - worker.id=worker2
-#      - server.port=8082
-#    networks:
-#      - spring-network
-#    depends_on:
-#      - registry
-#
-#  worker3:
-#    build:
-#      context: ./worker
-#      dockerfile: Dockerfile
-#    ports:
+#      - "2376:2375"
 #      - "8083:8081"
+#      - "8084:8082"
 #    environment:
 #      - registry.url=http://registry:8080
-#      - worker.id=worker3
-#      - server.port=8083
+#      - node.id=node2
 #    networks:
 #      - spring-network
+#    depends_on:
+#      - registry
+#    volumes:
+#      - ../worker/target/worker-1.0-SNAPSHOT.jar:/worker/worker-1.0-SNAPSHOT.jar
+#
+#  server:
+#    build:
+#      context: ./WebServer
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8085:8085"
+#    networks:
+#      - spring-network
+#    environment:
+#      - registry.url=http://registry:8080
 #    depends_on:
 #      - registry
 #
@@ -141,7 +66,7 @@ networks:
 #      context: ./load-balancer
 #      dockerfile: Dockerfile
 #    ports:
-#      - "8084:8082"
+#      - "8086:8082"
 #    environment:
 #      - registry.url=http://registry:8080
 #      - service.hello.urls=http://worker1:8081/hello,http://worker2:8082/hello
@@ -154,3 +79,82 @@ networks:
 #networks:
 #  spring-network:
 #    driver: bridge
+
+
+
+
+version: '3.8'
+
+services:
+  registry:
+    build:
+      context: ./registry
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-network
+
+  worker1:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - registry.url=http://registry:8080
+      - worker.id=worker1
+      - server.port=8081
+    networks:
+      - spring-network
+    depends_on:
+      - registry
+
+  worker2:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8081"
+    environment:
+      - registry.url=http://registry:8080
+      - worker.id=worker2
+      - server.port=8082
+    networks:
+      - spring-network
+    depends_on:
+      - registry
+
+  worker3:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8081"
+    environment:
+      - registry.url=http://registry:8080
+      - worker.id=worker3
+      - server.port=8083
+    networks:
+      - spring-network
+    depends_on:
+      - registry
+
+  load-balancer:
+    build:
+      context: ./load-balancer
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8082"
+    environment:
+      - registry.url=http://registry:8080
+      - service.hello.urls=http://worker1:8081/hello,http://worker2:8082/hello
+      - service.goodbye.urls=http://worker1:8081/goodbye,http://worker3:8083/goodbye
+    networks:
+      - spring-network
+    depends_on:
+      - registry
+
+networks:
+  spring-network:
+    driver: bridge
