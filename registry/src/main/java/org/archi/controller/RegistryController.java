@@ -7,8 +7,40 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
 
+@RestController
+public class RegistryController {
 
+    private final Set<String> nodes = new HashSet<>();
+    private final Map<String, Set<String>> workers = new HashMap<>();
+
+    @PostMapping("/register-node")
+    public String registerNode(@RequestParam String node) {
+        nodes.add(node);
+        return "Node registered: " + node;
+    }
+
+    @PostMapping("/register-worker")
+    public String registerWorker(@RequestParam String node, @RequestParam String worker) {
+        workers.computeIfAbsent(node, k -> new HashSet<>()).add(worker);
+        return "Worker registered: " + worker + " on node: " + node;
+    }
+
+    @GetMapping("/nodes")
+    public Set<String> getNodes() {
+        return nodes;
+    }
+
+    @GetMapping("/workers")
+    public Map<String, Set<String>> getWorkers() {
+        return workers;
+    }
+}
+
+/*
 @RestController
 @RequestMapping("/registry")
 public class RegistryController {
@@ -36,4 +68,4 @@ public class RegistryController {
     public void updateWorkerStatus(@RequestBody WorkerStatus workerStatus) {
         workers.put(workerStatus.getWorkerId(), workerStatus);
     }
-}
+}*/

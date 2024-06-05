@@ -37,6 +37,17 @@ Disponible dans le tag v1.
 
 Cette version implémente l'application de base fonctionnelle avec le monitoring.
 
+**Remarque** : il y a une erreur de relative path dans les pom.xml des modules (pas le pom.xml en root du projet). 
+Il faut modifier la balise relative path comme suit :  
+````xml
+<parent>
+    <groupId>org.archi</groupId>
+    <artifactId>architecture_project</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>>
+</parent>
+````
+
 ### V2
 
 Disponible dans le tag v2.
@@ -61,3 +72,12 @@ Il est possible pour l'utilisateur d'ajouter un paramètre "name" à la requête
 Exécuter plusieurs fois la requête pour voir le changement aléatoire de worker.
 
 
+### V3
+
+Disponible dans le tag v3.
+
+Ajout des noeuds et du WebServer. Désormais, le docker-compose ne gère plus le lancement des conteneurs pour les workers ; c'est le docker du node qui s'en charge.
+
+Le WebServer identifie les services et le nombre de workers demandés, puis il démarre les workers correspondants.
+
+--> Ne fonctionne pas, il y a encore un problème avec le lancement du node container...

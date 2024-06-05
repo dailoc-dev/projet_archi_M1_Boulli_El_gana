@@ -12,6 +12,7 @@
         <module>load-balancer</module>
         <module>worker</module>
         <module>registry</module>
+        <module>WebServer</module>
     </modules>
 
     <properties>
